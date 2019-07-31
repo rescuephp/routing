@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e93aea11e4fce60aa57cae0c0497842",
+    "content-hash": "9aeeaa9913ace34776ee785c52224d66",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -764,7 +764,7 @@
         },
         {
             "name": "rescuephp/http",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rescuephp/http.git",
@@ -785,11 +785,7 @@
                     "Rescue\\Http\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Rescue\\Http\\Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -800,10 +796,6 @@
                 }
             ],
             "description": "Rescue HTTP library",
-            "support": {
-                "source": "https://github.com/rescuephp/http/tree/master",
-                "issues": "https://github.com/rescuephp/http/issues"
-            },
             "time": "2019-07-31T10:06:55+00:00"
         },
         {
@@ -1574,9 +1566,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "rescuephp/http": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
