@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Routing\Middleware;
 
-use Rescue\Http\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use function get_class;
 
 class MiddlewareStorage implements MiddlewareStorageInterface

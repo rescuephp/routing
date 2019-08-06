@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Routing;
 
 use Rescue\Routing\Middleware\MiddlewareStorageInterface;

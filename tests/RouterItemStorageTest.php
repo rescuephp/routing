@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;

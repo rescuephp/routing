@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rescue\Routing;
 
-use Rescue\Http\RequestInterface;
 use Rescue\Routing\Middleware\MiddlewareStorageInterface;
 use Rescue\Routing\Middleware\MiddlewareStorageKeepTrait;
 use function strtoupper;
 
 class RouterItemStorage implements RouterItemStorageInterface
 {
+    public const METHOD_POST = 'POST';
+    public const METHOD_GET = 'GET';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_PATCH = 'PATCH';
+
     use MiddlewareStorageKeepTrait;
 
     /**
@@ -115,7 +122,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     public function get(string $uri, string $handler): ?RouterItem
     {
         return $this->on(
-            RequestInterface::METHOD_GET,
+            self::METHOD_GET,
             $uri,
             $handler
         );
@@ -127,7 +134,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     public function post(string $uri, string $handler): ?RouterItem
     {
         return $this->on(
-            RequestInterface::METHOD_POST,
+            self::METHOD_POST,
             $uri,
             $handler
         );
@@ -139,7 +146,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     public function put(string $uri, string $handler): ?RouterItem
     {
         return $this->on(
-            RequestInterface::METHOD_PUT,
+            self::METHOD_PUT,
             $uri,
             $handler
         );
@@ -151,7 +158,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     public function patch(string $uri, string $handler): ?RouterItem
     {
         return $this->on(
-            RequestInterface::METHOD_PATCH,
+            self::METHOD_PATCH,
             $uri,
             $handler
         );
@@ -163,7 +170,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     public function delete(string $uri, string $handler): ?RouterItem
     {
         return $this->on(
-            RequestInterface::METHOD_DELETE,
+            self::METHOD_DELETE,
             $uri,
             $handler
         );
