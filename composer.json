@@ -1,7 +1,6 @@
 {
     "name": "rescuephp/routing",
     "description": "Routing library",
-    "version": "1.0.3",
     "type": "library",
     "license": "MIT",
     "authors": [

@@ -9,14 +9,14 @@ use Rescue\Routing\Middleware\MiddlewareStorageInterface;
 use Rescue\Routing\Middleware\MiddlewareStorageKeepTrait;
 use function strtoupper;
 
-class RouterItemStorage implements RouterItemStorageInterface
+class RouterStorage implements RouterStorageInterface
 {
     use MiddlewareStorageKeepTrait;
 
     /**
-     * @var RouterItemInterface[]
+     * @var RouterInterface|null
      */
-    private $routes = [];
+    private $router;
 
     /**
      * @var string
@@ -28,12 +28,19 @@ class RouterItemStorage implements RouterItemStorageInterface
      */
     private $requestMethod;
 
+    /**
+     * @var string
+     */
+    private $uri;
+
     public function __construct(
         MiddlewareStorageInterface $middlewareStorage,
-        string $requestMethod
+        string $requestMethod,
+        string $uri
     ) {
         $this->middlewareStorage = $middlewareStorage;
         $this->requestMethod = strtoupper($requestMethod);
+        $this->uri = $uri;
     }
 
     /**
@@ -43,7 +50,7 @@ class RouterItemStorage implements RouterItemStorageInterface
         callable $callback,
         string $prefix = null,
         MiddlewareStorageInterface $middlewareStorage = null
-    ): RouterItemStorageInterface {
+    ): RouterStorageInterface {
         $storage = clone $this;
 
         if (!empty($prefix)) {
@@ -58,7 +65,9 @@ class RouterItemStorage implements RouterItemStorageInterface
 
         $callback($storage);
 
-        $this->routes = array_merge($this->routes, $storage->getItems());
+        if ($storage->getRouter() instanceof RouterInterface) {
+            $this->router = $storage->getRouter();
+        }
 
         return $this;
     }
@@ -66,7 +75,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function withPrefix(string $prefix): RouterItemStorageInterface
+    public function withPrefix(string $prefix): RouterStorageInterface
     {
         $this->prefix .= $this->uriFormatter($prefix);
 
@@ -76,15 +85,15 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function getItems(): array
+    public function getRouter(): ?RouterInterface
     {
-        return $this->routes;
+        return $this->router;
     }
 
     /**
      * @inheritDoc
      */
-    public function on(string $method, string $uri, string $handler): ?RouterItem
+    public function on(string $method, string $uri, string $handler): ?RouterInterface
     {
         $method = strtoupper($method);
 
@@ -98,23 +107,28 @@ class RouterItemStorage implements RouterItemStorageInterface
             $uri = $this->prefix . $uri;
         }
 
-        $item = new RouterItem(
-            $method,
-            $uri,
-            $handler,
-            $this->convertUriParamsToRegEx($uri),
-            $this->getUriParamsNames($uri)
-        );
+        $regEx = $this->convertUriParamsToRegEx($uri);
 
-        $item->withMiddlewareStorage(clone $this->getMiddlewareStorage());
+        if (preg_match($regEx, $this->uri, $matches) === 1) {
+            $router = new Router(
+                $method,
+                $uri,
+                $handler,
+                $this->parseUriParams($this->getUriParamsNames($uri), $matches)
+            );
 
-        return $this->routes[$uri] = $item;
+            $router->withMiddlewareStorage(clone $this->getMiddlewareStorage());
+
+            return $this->router = $router;
+        }
+
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function get(string $uri, string $handler): ?RouterItem
+    public function get(string $uri, string $handler): ?RouterInterface
     {
         return $this->on(
             RequestMethodInterface::METHOD_GET,
@@ -126,7 +140,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function post(string $uri, string $handler): ?RouterItem
+    public function post(string $uri, string $handler): ?RouterInterface
     {
         return $this->on(
             RequestMethodInterface::METHOD_POST,
@@ -138,7 +152,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function put(string $uri, string $handler): ?RouterItem
+    public function put(string $uri, string $handler): ?RouterInterface
     {
         return $this->on(
             RequestMethodInterface::METHOD_PUT,
@@ -150,7 +164,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function patch(string $uri, string $handler): ?RouterItem
+    public function patch(string $uri, string $handler): ?RouterInterface
     {
         return $this->on(
             RequestMethodInterface::METHOD_PATCH,
@@ -162,7 +176,7 @@ class RouterItemStorage implements RouterItemStorageInterface
     /**
      * @inheritDoc
      */
-    public function delete(string $uri, string $handler): ?RouterItem
+    public function delete(string $uri, string $handler): ?RouterInterface
     {
         return $this->on(
             RequestMethodInterface::METHOD_DELETE,
@@ -183,10 +197,6 @@ class RouterItemStorage implements RouterItemStorageInterface
         return "/^$uri$/";
     }
 
-    /**
-     * @param string $uri
-     * @return array
-     */
     private function getUriParamsNames(string $uri): array
     {
         preg_match_all('/{(\w+)}/', $uri, $matches);
@@ -199,5 +209,18 @@ class RouterItemStorage implements RouterItemStorageInterface
         $uri = trim($uri, " \t\n\r\0\x0B\/");
 
         return "/$uri";
+    }
+
+    private function parseUriParams(array $paramsNames, array $matches): array
+    {
+        array_shift($matches);
+
+        $requestParams = [];
+
+        foreach ($paramsNames as $key => $name) {
+            $requestParams[$name] = $matches[$key] ?? null;
+        }
+
+        return $requestParams;
     }
 }

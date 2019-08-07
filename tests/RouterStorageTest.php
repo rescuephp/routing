@@ -6,38 +6,35 @@ namespace Rescue\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
 use Rescue\Routing\Middleware\MiddlewareStorage;
-use Rescue\Routing\RouterItem;
-use Rescue\Routing\RouterItemInterface;
-use Rescue\Routing\RouterItemStorage;
+use Rescue\Routing\RouterInterface;
+use Rescue\Routing\RouterStorage;
 
-final class RouterItemStorageTest extends TestCase
+final class RouterStorageTest extends TestCase
 {
     public function testAllowedMethod(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'POST');
+        $router = new RouterStorage(new MiddlewareStorage(), 'POST', '/test');
         $this->assertNull($router->get('handlerClass', 'handlerClass'));
         $this->assertNull($router->put('handlerClass', 'handlerClass'));
         $this->assertNull($router->delete('handlerClass', 'handlerClass'));
         $this->assertNull($router->patch('handlerClass', 'handlerClass'));
-        $this->assertInstanceOf(RouterItemInterface::class, $router->post('handlerClass', 'b'));
+
+        $this->assertInstanceOf(RouterInterface::class, $router->post('test', 'handlerClass'));
     }
 
     public function testUriFormatter(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'get');
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test');
         $item = $router->get('test', 'handlerClass');
         $this->assertEquals('/test', $item->getUri());
     }
 
     public function testGetItems(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'get');
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test');
         $router->on('get', '/test', 'handlerClass');
 
-        $items = $router->getItems();
-
-        /** @var RouterItemInterface $item */
-        $item = array_shift($items);
+        $item = $router->getRouter();
 
         $this->assertEquals('/test', $item->getUri());
         $this->assertEquals('GET', $item->getMethod());
@@ -45,7 +42,7 @@ final class RouterItemStorageTest extends TestCase
 
     public function testMethods(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'post');
+        $router = new RouterStorage(new MiddlewareStorage(), 'post', '/');
 
         $router->get('/', 'handlerClass');
         $router->get('/test', 'handlerClass');
@@ -58,22 +55,16 @@ final class RouterItemStorageTest extends TestCase
         $router->patch('/', 'handlerClass');
         $router->patch('/test', 'handlerClass');
 
-        $items = $router->getItems();
+        $item = $router->getRouter();
 
-        $this->assertCount(2, $items);
-
-        /** @var RouterItemInterface $item */
-        $item = array_shift($items);
-
-        $this->assertEquals('/test', $item->getUri());
-        $this->assertEquals('POST', $item->getMethod());
+        $this->assertInstanceOf(RouterInterface::class, $item);
     }
 
     public function testGroup(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'DELETE');
+        $router = new RouterStorage(new MiddlewareStorage(), 'DELETE', '/admin/user/12');
 
-        $router->group(static function (RouterItemStorage $router) {
+        $router->group(static function (RouterStorage $router) {
             $router->get('/', 'handlerClass');
             $router->get('/{id}', 'handlerClass');
             $router->post('/', 'handlerClass');
@@ -81,23 +72,19 @@ final class RouterItemStorageTest extends TestCase
             $router->put('/{id}', 'handlerClass');
         }, '/admin/user', new MiddlewareStorage());
 
-        $items = $router->getItems();
+        $item = $router->getRouter();
 
-        /** @var RouterItem $item */
-        $item = array_shift($items);
         $this->assertEquals('/admin/user/{id}', $item->getUri());
         $this->assertEquals('DELETE', $item->getMethod());
     }
 
     public function testPrefixInRouteItem(): void
     {
-        $router = new RouterItemStorage(new MiddlewareStorage(), 'GET');
+        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/prefix/test');
         $router->withPrefix('/prefix');
         $router->on('get', 'test', 'handlerClass');
 
-        $items = $router->getItems();
-        /** @var RouterItemInterface $item */
-        $item = array_shift($items);
+        $item = $router->getRouter();
 
         $this->assertEquals('/prefix/test', $item->getUri());
     }

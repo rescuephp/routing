@@ -6,7 +6,7 @@ namespace Rescue\Routing;
 
 use Rescue\Routing\Middleware\MiddlewareStorageKeepTrait;
 
-class RouterItem implements RouterItemInterface
+class Router implements RouterInterface
 {
     use MiddlewareStorageKeepTrait;
 
@@ -33,45 +33,49 @@ class RouterItem implements RouterItemInterface
     /**
      * @var array
      */
-    private $paramsNames;
-
+    private $params;
 
     public function __construct(
         string $method,
         string $uri,
         string $handlerClass,
-        string $regExUri,
-        array $paramsNames = []
+        array $params = []
     ) {
         $this->method = $method;
         $this->uri = $uri;
         $this->handlerClass = $handlerClass;
-        $this->regExUri = $regExUri;
-        $this->paramsNames = $paramsNames;
+        $this->params = $params;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getUri(): string
     {
         return $this->uri;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getHandlerClass(): string
     {
         return $this->handlerClass;
     }
 
-    public function getRegExUri(): string
+    /**
+     * @inheritDoc
+     */
+    public function getParams(): array
     {
-        return $this->regExUri;
-    }
-
-    public function getParamsNames(): array
-    {
-        return $this->paramsNames;
+        return $this->params;
     }
 }

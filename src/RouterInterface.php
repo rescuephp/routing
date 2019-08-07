@@ -6,7 +6,7 @@ namespace Rescue\Routing;
 
 use Rescue\Routing\Middleware\MiddlewareStorageKeepInterface;
 
-interface RouterItemInterface extends MiddlewareStorageKeepInterface
+interface RouterInterface extends MiddlewareStorageKeepInterface
 {
     /**
      * Returns HTTP method
@@ -27,14 +27,8 @@ interface RouterItemInterface extends MiddlewareStorageKeepInterface
     public function getHandlerClass(): string;
 
     /**
-     * Returns uri regular expression
-     * @return string
-     */
-    public function getRegExUri(): string;
-
-    /**
      * Returns params names array from uri
      * @return array
      */
-    public function getParamsNames(): array;
+    public function getParams(): array;
 }
