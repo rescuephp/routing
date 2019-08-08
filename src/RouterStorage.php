@@ -31,7 +31,7 @@ class RouterStorage implements RouterStorageInterface
     /**
      * @var string
      */
-    private $uri;
+    private $requestUri;
 
     public function __construct(
         MiddlewareStorageInterface $middlewareStorage,
@@ -40,7 +40,7 @@ class RouterStorage implements RouterStorageInterface
     ) {
         $this->middlewareStorage = $middlewareStorage;
         $this->requestMethod = strtoupper($requestMethod);
-        $this->uri = $uri;
+        $this->requestUri = $uri;
     }
 
     /**
@@ -107,9 +107,22 @@ class RouterStorage implements RouterStorageInterface
             $uri = $this->prefix . $uri;
         }
 
+        if ($uri === $this->requestUri) {
+            $router = new Router(
+                $method,
+                $uri,
+                $handler
+            );
+
+            $router->withMiddlewareStorage(clone $this->getMiddlewareStorage());
+
+            return $this->router = $router;
+        }
+
         $regEx = $this->convertUriParamsToRegEx($uri);
 
-        if (preg_match($regEx, $this->uri, $matches) === 1) {
+
+        if (preg_match($regEx, $this->requestUri, $matches) === 1) {
             $router = new Router(
                 $method,
                 $uri,
