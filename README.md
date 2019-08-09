@@ -1,4 +1,6 @@
 Routing library
 
 ### Install
-`composer require rescuephp/routing`
+```
+composer require rescuephp/routing
+```
