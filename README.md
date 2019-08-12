@@ -2,6 +2,8 @@
 [![Latest Stable Version](https://poser.pugx.org/rescuephp/routing/v/stable)](https://packagist.org/packages/rescuephp/routing)
 [![License](https://poser.pugx.org/rescuephp/routing/license)](https://packagist.org/packages/rescuephp/routing)
 [![Total Downloads](https://poser.pugx.org/rescuephp/routing/downloads)](https://packagist.org/packages/rescuephp/routing)
+[![Build](https://travis-ci.com/rescuephp/routing.svg?branch=master)](https://travis-ci.com/rescuephp/routing)
+[![codecov](https://codecov.io/gh/rescuephp/routing/branch/master/graph/badge.svg)](https://codecov.io/gh/rescuephp/routing)
 
 Routing library
 
