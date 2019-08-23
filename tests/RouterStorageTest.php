@@ -78,6 +78,24 @@ final class RouterStorageTest extends TestCase
         $this->assertEquals('DELETE', $item->getMethod());
     }
 
+    public function testGroupOther(): void
+    {
+        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/admin/user');
+
+        $router->group(static function (RouterStorage $router) {
+            $router->get('/', 'handlerClass');
+            $router->get('/{id}', 'handlerClass');
+            $router->post('/', 'handlerClass');
+            $router->delete('/{id}', 'handlerClass');
+            $router->put('/{id}', 'handlerClass');
+        }, '/admin/user', new MiddlewareStorage());
+
+        $item = $router->getRouter();
+
+        $this->assertEquals('/admin/user', $item->getUri());
+        $this->assertEquals('GET', $item->getMethod());
+    }
+
     public function testPrefixInRouteItem(): void
     {
         $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/prefix/test');

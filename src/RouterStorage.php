@@ -104,7 +104,7 @@ class RouterStorage implements RouterStorageInterface
         $uri = $this->uriFormatter($uri);
 
         if (!empty($this->prefix)) {
-            $uri = $this->prefix . $uri;
+            $uri = rtrim($this->prefix . $uri, '/');
         }
 
         if ($uri === $this->requestUri) {
@@ -120,7 +120,6 @@ class RouterStorage implements RouterStorageInterface
         }
 
         $regEx = $this->convertUriParamsToRegEx($uri);
-
 
         if (preg_match($regEx, $this->requestUri, $matches) === 1) {
             $router = new Router(
