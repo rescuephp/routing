@@ -31,13 +31,34 @@ final class RouterStorageTest extends TestCase
 
     public function testGetItems(): void
     {
-        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test');
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test/');
         $router->on('get', '/test', 'handlerClass');
 
         $item = $router->getRouter();
 
         $this->assertEquals('/test', $item->getUri());
         $this->assertEquals('GET', $item->getMethod());
+    }
+
+    public function testRegItem(): void
+    {
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test/');
+        $router->on('GET', '/test', 'handlerClass');
+
+        $item = $router->getRouter();
+        $this->assertEquals('/test', $item->getUri());
+
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test/');
+        $router->on('GET', 'test', 'handlerClass');
+
+        $item = $router->getRouter();
+        $this->assertEquals('/test', $item->getUri());
+
+        $router = new RouterStorage(new MiddlewareStorage(), 'get', '/test');
+        $router->on('GET', '/test/', 'handlerClass');
+
+        $item = $router->getRouter();
+        $this->assertEquals('/test', $item->getUri());
     }
 
     public function testMethods(): void
@@ -80,7 +101,7 @@ final class RouterStorageTest extends TestCase
 
     public function testGroupOther(): void
     {
-        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/admin/user');
+        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/admin/user/');
 
         $router->group(static function (RouterStorage $router) {
             $router->get('/', 'handlerClass');
@@ -98,7 +119,7 @@ final class RouterStorageTest extends TestCase
 
     public function testPrefixInRouteItem(): void
     {
-        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/prefix/test');
+        $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/prefix/test/');
         $router->withPrefix('/prefix');
         $router->on('get', 'test', 'handlerClass');
 

@@ -40,7 +40,7 @@ class RouterStorage implements RouterStorageInterface
     ) {
         $this->middlewareStorage = $middlewareStorage;
         $this->requestMethod = strtoupper($requestMethod);
-        $this->requestUri = $uri;
+        $this->requestUri = $this->uriFormatter($uri);
     }
 
     /**
@@ -101,11 +101,7 @@ class RouterStorage implements RouterStorageInterface
             return null;
         }
 
-        $uri = $this->uriFormatter($uri);
-
-        if (!empty($this->prefix)) {
-            $uri = rtrim($this->prefix . $uri, '/');
-        }
+        $uri = $this->uriFormatter($this->prefix . $this->uriFormatter($uri));
 
         if ($uri === $this->requestUri) {
             $router = new Router(
@@ -219,6 +215,10 @@ class RouterStorage implements RouterStorageInterface
     private function uriFormatter(string $uri): string
     {
         $uri = trim($uri, " \t\n\r\0\x0B\/");
+
+        if (empty($uri)) {
+            return '/';
+        }
 
         return "/$uri";
     }
