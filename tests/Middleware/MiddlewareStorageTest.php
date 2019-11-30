@@ -44,14 +44,12 @@ final class MiddlewareStorageTest extends TestCase
 
     private function getMiddlewareClass(): MiddlewareInterface
     {
-        return new class () implements MiddlewareInterface
-        {
+        return new class () implements MiddlewareInterface {
             public function process(
                 ServerRequestInterface $request,
                 RequestHandlerInterface $handler
             ): ResponseInterface {
-                return new class implements ResponseInterface
-                {
+                return new class implements ResponseInterface {
                     public function getProtocolVersion()
                     {
                         // TODO: Implement withProtocolVersion() method.
@@ -131,6 +129,5 @@ final class MiddlewareStorageTest extends TestCase
         $storage = new MiddlewareStorage();
 
         $this->assertFalse($storage->withMiddlewares(['a', 'b']));
-
     }
 }

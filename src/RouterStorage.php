@@ -13,25 +13,13 @@ class RouterStorage implements RouterStorageInterface
 {
     use MiddlewareStorageKeepTrait;
 
-    /**
-     * @var RouterInterface|null
-     */
-    private $router;
+    private ?RouterInterface $router;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix = '';
 
-    /**
-     * @var string
-     */
-    private $requestMethod;
+    private string $requestMethod;
 
-    /**
-     * @var string
-     */
-    private $requestUri;
+    private string $requestUri;
 
     public function __construct(
         MiddlewareStorageInterface $middlewareStorage,

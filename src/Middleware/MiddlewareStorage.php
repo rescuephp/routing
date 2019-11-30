@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rescue\Routing\Middleware;
 
 use Psr\Http\Server\MiddlewareInterface;
+
 use function get_class;
 
 class MiddlewareStorage implements MiddlewareStorageInterface
@@ -12,7 +13,7 @@ class MiddlewareStorage implements MiddlewareStorageInterface
     /**
      * @var MiddlewareInterface[]
      */
-    private $middlewares;
+    private array $middlewares;
 
     /**
      * MiddlewareStorage constructor.

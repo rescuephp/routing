@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
+        "php": ">=7.4",
         "psr/http-server-middleware": "^1.0",
         "fig/http-message-util": "^1.1"
     },

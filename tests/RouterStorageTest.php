@@ -85,13 +85,17 @@ final class RouterStorageTest extends TestCase
     {
         $router = new RouterStorage(new MiddlewareStorage(), 'DELETE', '/admin/user/12');
 
-        $router->group(static function (RouterStorage $router) {
-            $router->get('/', 'handlerClass');
-            $router->get('/{id}', 'handlerClass');
-            $router->post('/', 'handlerClass');
-            $router->delete('/{id}', 'handlerClass');
-            $router->put('/{id}', 'handlerClass');
-        }, '/admin/user', new MiddlewareStorage());
+        $router->group(
+            static function (RouterStorage $router) {
+                $router->get('/', 'handlerClass');
+                $router->get('/{id}', 'handlerClass');
+                $router->post('/', 'handlerClass');
+                $router->delete('/{id}', 'handlerClass');
+                $router->put('/{id}', 'handlerClass');
+            },
+            '/admin/user',
+            new MiddlewareStorage()
+        );
 
         $item = $router->getRouter();
 
@@ -103,13 +107,17 @@ final class RouterStorageTest extends TestCase
     {
         $router = new RouterStorage(new MiddlewareStorage(), 'GET', '/admin/user/');
 
-        $router->group(static function (RouterStorage $router) {
-            $router->get('/', 'handlerClass');
-            $router->get('/{id}', 'handlerClass');
-            $router->post('/', 'handlerClass');
-            $router->delete('/{id}', 'handlerClass');
-            $router->put('/{id}', 'handlerClass');
-        }, '/admin/user', new MiddlewareStorage());
+        $router->group(
+            static function (RouterStorage $router) {
+                $router->get('/', 'handlerClass');
+                $router->get('/{id}', 'handlerClass');
+                $router->post('/', 'handlerClass');
+                $router->delete('/{id}', 'handlerClass');
+                $router->put('/{id}', 'handlerClass');
+            },
+            '/admin/user',
+            new MiddlewareStorage()
+        );
 
         $item = $router->getRouter();
 

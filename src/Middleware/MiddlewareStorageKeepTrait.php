@@ -6,10 +6,7 @@ namespace Rescue\Routing\Middleware;
 
 trait MiddlewareStorageKeepTrait
 {
-    /**
-     * @var MiddlewareStorageInterface
-     */
-    private $middlewareStorage;
+    private ?MiddlewareStorageInterface $middlewareStorage;
 
     public function getMiddlewareStorage(): MiddlewareStorageInterface
     {
@@ -20,7 +17,7 @@ trait MiddlewareStorageKeepTrait
      * @param MiddlewareStorageInterface $middlewareStorage
      * @return static
      */
-    public function withMiddlewareStorage(MiddlewareStorageInterface $middlewareStorage)
+    public function withMiddlewareStorage(MiddlewareStorageInterface $middlewareStorage): self
     {
         $this->middlewareStorage = $middlewareStorage;
 

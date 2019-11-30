@@ -10,30 +10,15 @@ class Router implements RouterInterface
 {
     use MiddlewareStorageKeepTrait;
 
-    /**
-     * @var string
-     */
-    private $method;
+    private string $method;
 
-    /**
-     * @var string
-     */
-    private $uri;
+    private string $uri;
 
-    /**
-     * @var string
-     */
-    private $handlerClass;
+    private string $handlerClass;
 
-    /**
-     * @var string
-     */
-    private $regExUri;
+    private string $regExUri;
 
-    /**
-     * @var array
-     */
-    private $params;
+    private array $params;
 
     public function __construct(
         string $method,
